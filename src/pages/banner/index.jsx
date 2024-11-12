@@ -148,15 +148,7 @@ export default function Banner() {
               </Snackbar>
             </Card>
           ))}
-
-
-
         </Box>
-
-
-
-
-
       </Box>
     </>
   )

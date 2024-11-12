@@ -1,10 +1,10 @@
-import { Drawer, Autocomplete, Box, Divider, FormControl, FormLabel, Grid, IconButton, Input, Sheet, Typography, Stack, Button } from '@mui/joy'
+import { Drawer, Autocomplete, Box, Divider, FormControl, FormLabel, IconButton, Input, Sheet, Typography, Stack, Button } from '@mui/joy'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import React, { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { useForm } from "react-hook-form"
-import { wallpapersList, wallpapersPatch } from '../../../constants/urls';
-import { useLoad, usePatchRequest, usePostRequest } from '../../../hooks/request';
+import {  wallpapersPatch, wallpapersPost } from '../../../constants/urls';
+import {  usePatchRequest, usePostRequest } from '../../../hooks/request';
 
 
 const NumericFormatAdapter = React.forwardRef(function NumericFormatAdapter(props, ref) {
@@ -31,12 +31,12 @@ const NumericFormatAdapter = React.forwardRef(function NumericFormatAdapter(prop
 });
 
 
-function DrawerComp({ open, setOpen, collections }) {
+function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
 
   const patchRequest = usePatchRequest()
-  const postRequest = usePostRequest()
+  const postRequest = usePostRequest({ url: wallpapersPost })
 
-  const { control, register, handleSubmit } = useForm(
+  const { register, handleSubmit, reset } = useForm(
     {
       defaultValues: {
         name: '',
@@ -46,23 +46,24 @@ function DrawerComp({ open, setOpen, collections }) {
       },
     }
   )
-  const [value, setValue] = useState('');
-  const { response: wallpapers, loading: wallpapersLoading, request: reload } = useLoad({ url: wallpapersList })
+  const [isUpdate, setIsUpdate] = useState(null);
 
 
-  // const onSubmit = async (data) => {
-  //   const { success } = isUpdate ? await patchRequest.request({ url: wallpapersPatch(isUpdate), data }) : await postRequest.request({ data })
-  //   if (success) {
-  //     setOpenModal(false)
-  //     setIsUpdate(null)
-  //     reload()
-  //     reset()
-  //   }
-  // }
-
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+    const { success } = isUpdate ? await patchRequest.request({ url: wallpapersPatch(isUpdate), data }) : await postRequest.request({ data })
+    if (success) {
+      // setOpenModal(false)
+      setIsUpdate(null)
+      reload()
+      setOpen(false)
+      reset()
+    }
   }
+
+  // const onSubmit = (data) => {
+  //   console.log(data);
+  // }
 
   return (
     <Drawer
@@ -139,7 +140,7 @@ function DrawerComp({ open, setOpen, collections }) {
             </Stack>
           </Stack>
 
-          <Button type='submit'>Add</Button>
+          <Button loading={wallpapersLoading} type='submit'>Add</Button>
         </form>
 
       </Sheet>

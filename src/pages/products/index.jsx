@@ -1,5 +1,5 @@
 
-import { Box, Breadcrumbs, Typography, Button } from "@mui/joy";
+import { Box, Breadcrumbs, Typography, Button, Snackbar, Stack } from "@mui/joy";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import Add from '@mui/icons-material/Add';
 import { useLoad } from "../../hooks/request";
-import { collectionsList, wallpapersList } from "../../constants/urls";
+import { collectionsList, wallpapersDelete, wallpapersList } from "../../constants/urls";
 import { DrawerComp, TableComp } from "./components";
 
 
@@ -19,9 +19,10 @@ export default function Products() {
   const { response: wallpapers, loading: wallpapersLoading, request: reload } = useLoad({ url: wallpapersList })
 
   const [open, setOpen] = useState(false);
-
+  const [deleteModal, setDeleteModal] = useState(false)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
+
 
   const handleChangePage = (newPage) => {
     console.log(newPage);
@@ -70,10 +71,22 @@ export default function Products() {
           >Add</Button>
         </Box>
 
-        <TableComp page={page} rowsPerPage={rowsPerPage} emptyRows={emptyRows} wallpapers={wallpapers} handleChangePage={handleChangePage} getLabelDisplayedRowsTo={getLabelDisplayedRowsTo}  />
+        <TableComp
+          reload={reload}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          emptyRows={emptyRows}
+          wallpapers={wallpapers}
+          wallpapersLoading={wallpapersLoading}
+          handleChangePage={handleChangePage}
+          getLabelDisplayedRowsTo={getLabelDisplayedRowsTo} />
 
-        <DrawerComp open={open} setOpen={setOpen} collections={collections} />
-
+        <DrawerComp
+          open={open}
+          setOpen={setOpen}
+          reload={reload}
+          collections={collections}
+          wallpapersLoading={wallpapersLoading} />
 
       </Box>
 
