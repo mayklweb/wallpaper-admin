@@ -1,4 +1,3 @@
-import { message } from "antd"
 import { useEffect, useState } from "react"
 import Axios from "../api"
 
@@ -42,10 +41,10 @@ export function useRequest(options = {}) {
     } catch (e) {
       setError(e.response || {})
       if (e.response === undefined) {
-        message.warning('Проверьте интернет соединение')
+        // alert('Проверьте интернет соединение')
       }
       else if (e.response.status >= 500) {
-        message.warning('Ошибка сервера.')
+        // alert('Ошибка сервера.')
       }
       return { error: e.response, success: false }
     } finally {

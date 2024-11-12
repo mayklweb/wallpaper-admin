@@ -184,7 +184,7 @@ export default function Categories(){
           <HomeRoundedIcon />
         </Link>
         <Typography color="primary" sx={{ fontWeight: 500, fontSize: 12 }}>
-          Products
+          Collections
         </Typography>
       </Breadcrumbs>
     </Box>
@@ -193,7 +193,7 @@ export default function Categories(){
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
         <Typography level="h3">
-          Products
+          Collections
         </Typography>
         <Button
           size="sm"
