@@ -1,23 +1,23 @@
 
 // Collections
-export const collectionsList = '/collections'
-export const collectionsPost = '/collections'
-export const collectionsPatch = (id) => `/collections/${id}`
-export const collectionsDelete = (id) => `/collections/${id}`
+export const collectionsList = '/categories'
+export const collectionsPost = '/categories'
+export const collectionsPatch = (id) => `/categories/${id}`
+export const collectionsDelete = (id) => `/categories/${id}`
 
 
 // Banner    
-export const bannerList = '/banner'
-export const bannerPost = '/banner'
-export const bannerPatch = (id) => `/banner/${id}`
-export const bannerDelete = (id) => `/banner/${id}`
+export const bannerList = '/homepage-video'
+export const bannerPost = '/homepage-video'
+export const bannerPatch = (id) => `/homepage-video/${id}`
+export const bannerDelete = (id) => `/homepage-video/${id}`
 
 
 // Wallpapers
-export const wallpapersList = '/wallpapers'
-export const wallpapersPost = '/wallpapers'
-export const wallpapersPatch = (id) => `/wallpapers/${id}`
-export const wallpapersDelete = (id) => `/wallpapers/${id}`
+export const wallpapersList = '/products'
+export const wallpapersPost = '/products'
+export const wallpapersPatch = (id) => `/products/${id}`
+export const wallpapersDelete = (id) => `/products/${id}`
 
 // Content
 export const contentList = '/content'

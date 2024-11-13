@@ -6,10 +6,11 @@ function App() {
 
   const isAuth = useAuth()
 
+
   return (
     <>
       {
-        isAuth ? <AppLayout/> : <Login/>
+        isAuth.token ? <AppLayout /> : <Login />
       }
     </>
   )

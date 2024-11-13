@@ -8,15 +8,20 @@ import { wallpapersPatch, wallpapersPost } from '../../../constants/urls';
 import { usePatchRequest, usePostRequest } from '../../../hooks/request';
 import { styled } from '@mui/joy';
 
-import ImageCropper from './ImageCropper'
 
 
 
-
-
-
-
-
+const VisuallyHiddenInput = styled('input')`
+clip: rect(0 0 0 0);
+clip-path: inset(50%);
+height: 1px;
+overflow: hidden;
+position: absolute;
+bottom: 0;
+left: 0;
+white-space: nowrap;
+width: 1px;
+`;
 
 function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
 
@@ -25,9 +30,13 @@ function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
 
   const [croppedImage, setCroppedImage] = useState(null);
 
-  const handleCropComplete = (croppedImg) => {
-    setCroppedImage(croppedImg);
+  const handleCropComplete = (croppedImage) => {
+    setCroppedImage(croppedImage);
   };
+
+
+
+
 
   const { register, handleSubmit, reset } = useForm(
     {
@@ -44,31 +53,15 @@ function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
 
   const onSubmit = async (data) => {
     console.log(data);
-    const { success } = isUpdate ? await patchRequest.request({ url: wallpapersPatch(isUpdate), data }) : await postRequest.request({ data })
-    if (success) {
-      // setOpenModal(false)
-      setIsUpdate(null)
-      reload()
-      setOpen(false)
-      reset()
-    }
+    // const { success } = isUpdate ? await patchRequest.request({ url: wallpapersPatch(isUpdate), data }) : await postRequest.request({ data })
+    // if (success) {
+    //   // setOpenModal(false)
+    //   setIsUpdate(null)
+    //   reload()
+    //   setOpen(false)
+    //   reset()
+    // }
   }
-
-
-  const VisuallyHiddenInput = styled('input')`
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  white-space: nowrap;
-  width: 1px;
-`;
-
-
-
 
   return (
     <Drawer
@@ -141,16 +134,14 @@ function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
 
                 <FormLabel>Image</FormLabel>
 
-
                 <Button
                   component="label"
-                  {...register("image",)}
                   role={undefined}
                   tabIndex={-1}
                   variant="outlined"
                   color="neutral"
                   startDecorator={
-                    <SvgIcon  >
+                    <SvgIcon>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -168,19 +159,22 @@ function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
                   }
                 >
                   Upload a file
-                  <VisuallyHiddenInput type="file" />
+                  <VisuallyHiddenInput {...register("image")} type="file" />
                 </Button>
+
+                {/* <ImageUploaderAndCropper /> */}
 
               </FormControl>
 
-              <div>
-                <h1>Image Cropper</h1>
-                <ImageCropper
-                  imageSrc="URL_OF_YOUR_IMAGE" // Replace with actual image URL or base64 string
-                  onCropComplete={handleCropComplete}
-                />
-                {croppedImage && <img src={croppedImage} alt="Cropped" />}
-              </div>
+
+
+
+            </Stack>
+
+            <Stack direction="row" spacing={2}>
+
+
+
 
             </Stack>
           </Stack>

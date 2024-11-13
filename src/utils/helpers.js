@@ -1,5 +1,6 @@
 export const getLocale = (key) => localStorage.getItem(key)
-export const setLocale = (key, value ) => localStorage.setItem(key, value)
+export const setLocale = (key, value) => localStorage.setItem(key, value)
+export const removeLocale = (key) => localStorage.removeItem(key)
 
 export function slugify(str) {
   return String(str)

@@ -35,6 +35,9 @@ import { closeSidebar, toggleSidebar } from '../utils';
 import { useColorScheme } from '@mui/joy';
 import { sidebarItems } from '../../../constants/menuItems';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import Axios from '../../../api';
+import { getLocale, removeLocale } from '../../../utils/helpers';
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
@@ -59,13 +62,19 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
 export default function Sidebar() {
   const { mode, setMode } = useColorScheme();
 
+  const handleLogout = () => {
+    axios.post('https://marimovit1.pythonanywhere.com/auth/logout/')
+    window.location.reload()
+    removeLocale('token')
+  }
+
   const slideIn = window
     .getComputedStyle(document.documentElement)
     .getPropertyValue('--SideNavigation-slideIn');
 
   return (
-      <>
-    
+    <>
+
       <GlobalStyles
         styles={(theme) => ({
           ':root': {
@@ -203,13 +212,13 @@ export default function Sidebar() {
             <Typography level="title-sm">Siriwat K.</Typography>
             <Typography level="body-xs">siriwatk@test.com</Typography>
           </Box>
-          <IconButton size="sm" variant="plain" color="neutral">
+          <IconButton onClick={handleLogout} size="sm" variant="plain" color="neutral">
             <LogoutRoundedIcon />
           </IconButton>
         </Box>
 
       </Sheet>
 
-      </>
+    </>
   );
 }

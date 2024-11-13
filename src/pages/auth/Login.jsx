@@ -1,81 +1,3 @@
-// import React, { useState } from 'react';
-// import { LockOutlined, UserOutlined } from '@ant-design/icons';
-// import { Button, Card, Form, Input } from 'antd';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-// import { useAuth } from '../../context/AuthContext';
-
-// function Login() {
-
-//   const { addToken } = useAuth()
-
-//   const navigate = useNavigate()
-
-//   const [loading, setLoading] = useState(false)
-
-//   const onFinish = (values) => {
-//     setLoading(true)
-//     axios.post('https://67393b336454d213.mokky.dev/auth', values).then((res) => {
-//       if (res.data.token) {
-//         addToken(res.data.token)
-//         navigate("/")
-//       }
-//     }).catch(err => console.log(err, '💩💩💩')).finally(() => setLoading(false))
-//   }
-
-//   return (
-//     <div className='login-page'>
-
-//       <Card title='Login' style={{ width: 300 }}>
-//         <Form
-//           name="normal_login"
-//           className="login-form"
-//           initialValues={{
-//             remember: true,
-//           }}
-//           onFinish={onFinish}
-//         >
-//           <Form.Item
-//             name="username"
-//             rules={[
-//               {
-//                 required: true,
-//                 message: 'Please input your Username!',
-//               },
-//             ]}
-//           >
-//             <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
-//           </Form.Item>
-//           <Form.Item
-//             name="password"
-//             rules={[
-//               {
-//                 required: true,
-//                 message: 'Please input your Password!',
-//               },
-//             ]}
-//           >
-//             <Input
-//               prefix={<LockOutlined className="site-form-item-icon" />}
-//               type="password"
-//               placeholder="Password"
-//             />
-//           </Form.Item>
-//           <Form.Item>
-//             <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loading} >
-//               Log in
-//             </Button>
-//           </Form.Item>
-//         </Form>
-//       </Card>
-//     </div>
-
-//   );
-// };
-// export default Login;
-
-
-import * as React from 'react';
 import { CssVarsProvider, extendTheme, useColorScheme } from '@mui/joy/styles';
 import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
@@ -93,13 +15,20 @@ import Stack from '@mui/joy/Stack';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Axios, { sendTokenToHeaders } from '../../api';
+import { login } from '../../api/authService';
 
 function ColorSchemeToggle(props) {
   const { onClick, ...other } = props;
   const { mode, setMode } = useColorScheme();
-  const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => setMounted(true), []);
+  useEffect(() => setMounted(true), []);
 
   return (
     <IconButton
@@ -121,6 +50,82 @@ function ColorSchemeToggle(props) {
 const customTheme = extendTheme({ defaultColorScheme: 'dark' });
 
 export default function Login() {
+
+  const [protectedData, setProtectedData] = useState(null);
+
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues:
+    {
+      username: '',
+      password: '',
+    }
+  })
+
+  const { addToken } = useAuth()
+
+  const navigate = useNavigate()
+
+  const [loading, setLoading] = useState(false)
+
+  const fetchProtectedData = async () => {
+    const token = localStorage.getItem('token'); // Retrieve token from storage
+
+    try {
+      console.log(token);
+      const response = await Axios.get(`/auth/login`, {
+
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      setData(response.data); // Store protected data in state
+    } catch (error) {
+      console.error('Error fetching protected data:', error.response?.data || error.message);
+      if (error.response?.status === 401) {
+        alert('Unauthorized! Please log in again.');
+        logout();
+      }
+    }
+  };
+
+  const onFinish = (data) => {
+    setLoading(true)
+    axios.post("https://marimovit1.pythonanywhere.com/auth/login/", data).then((res) => {
+      console.log(res);
+      if (res.data.key) {
+        // sendTokenToHeaders(res.data.key)
+        addToken(res.data.key)
+        navigate("/")
+        fetchProtectedData()
+      }
+    }).catch(err => console.log(err, '💩💩💩')).finally(() => setLoading(false))
+  }
+
+  // const onFinish = async (data) => {
+  //   try {
+  //     await login(data);
+  //     alert('Login successful!');
+  //     // Optionally fetch protected data after login
+  //     fetchProtectedData();
+  //   } catch (error) {
+  //     alert('Login failed. Please check your credentials.');
+  //   }
+  // };
+
+  // const fetchProtectedData = async () => {
+  //   try {
+  //     const data = await apiRequest('GET', '/auth/login');
+  //     setProtectedData(data);
+  //   } catch (error) {
+  //     console.error("Error fetching protected data:", error.message);
+  //   }
+  // };
+
+
+
+
   return (
     <CssVarsProvider theme={customTheme} disableTransitionOnChange>
       <CssBaseline />
@@ -192,7 +197,7 @@ export default function Login() {
               },
             }}
           >
-            <Stack sx={{ gap: 4, mb: 2 }}>
+            {/* <Stack sx={{ gap: 4, mb: 2 }}>
               <Stack sx={{ gap: 1 }}>
                 <Typography component="h1" level="h3">
                   Sign in
@@ -205,8 +210,8 @@ export default function Login() {
                 </Typography>
               </Stack>
               
-            </Stack>
-            <Divider
+            </Stack> */}
+            {/* <Divider
               sx={(theme) => ({
                 [theme.getColorSchemeSelector('light')]: {
                   color: { xs: '#FFF', md: 'text.tertiary' },
@@ -214,30 +219,21 @@ export default function Login() {
               })}
             >
               or
-            </Divider>
+            </Divider> */}
             <Stack sx={{ gap: 4, mt: 2 }}>
               <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const formElements = event.currentTarget.elements;
-                  const data = {
-                    email: formElements.email.value,
-                    password: formElements.password.value,
-                    persistent: formElements.persistent.checked,
-                  };
-                  alert(JSON.stringify(data, null, 2));
-                }}
+                onSubmit={handleSubmit(onFinish)}
               >
                 <FormControl required>
-                  <FormLabel>Email</FormLabel>
-                  <Input type="email" name="email" />
+                  <FormLabel>Login</FormLabel>
+                  <Input {...register("username")} type="text" name="username" />
                 </FormControl>
                 <FormControl required>
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" name="password" />
+                  <Input {...register("password")} type="password" name="password" />
                 </FormControl>
                 <Stack sx={{ gap: 4, mt: 2 }}>
-                  <Box
+                  {/* <Box
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -245,22 +241,20 @@ export default function Login() {
                     }}
                   >
                     <Checkbox size="sm" label="Remember me" name="persistent" />
-                    <Link level="title-sm" href="#replace-with-a-link">
-                      Forgot your password?
-                    </Link>
-                  </Box>
-                  <Button type="submit" fullWidth>
+
+                  </Box> */}
+                  <Button loading={loading} type="submit" fullWidth>
                     Sign in
                   </Button>
                 </Stack>
               </form>
             </Stack>
           </Box>
-          <Box component="footer" sx={{ py: 3 }}>
+          {/* <Box component="footer" sx={{ py: 3 }}>
             <Typography level="body-xs" sx={{ textAlign: 'center' }}>
               © Your company {new Date().getFullYear()}
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
       </Box>
       <Box
