@@ -35,9 +35,6 @@ function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
   };
 
 
-
-
-
   const { register, handleSubmit, reset } = useForm(
     {
       defaultValues: {
@@ -53,14 +50,14 @@ function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
 
   const onSubmit = async (data) => {
     console.log(data);
-    // const { success } = isUpdate ? await patchRequest.request({ url: wallpapersPatch(isUpdate), data }) : await postRequest.request({ data })
-    // if (success) {
-    //   // setOpenModal(false)
-    //   setIsUpdate(null)
-    //   reload()
-    //   setOpen(false)
-    //   reset()
-    // }
+    const { success } = isUpdate ? await patchRequest.request({ url: wallpapersPatch(isUpdate), data }) : await postRequest.request({ data })
+    if (success) {
+      // setOpenModal(false)
+      setIsUpdate(null)
+      reload()
+      setOpen(false)
+      reset()
+    }
   }
 
   return (
@@ -172,8 +169,6 @@ function DrawerComp({ open, setOpen, collections, wallpapersLoading, reload }) {
             </Stack>
 
             <Stack direction="row" spacing={2}>
-
-
 
 
             </Stack>

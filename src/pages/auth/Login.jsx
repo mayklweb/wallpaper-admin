@@ -67,8 +67,7 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false)
 
-  const fetchProtectedData = async () => {
-    const token = localStorage.getItem('token'); // Retrieve token from storage
+  const fetchProtectedData = async (token) => {
 
     try {
       console.log(token);
@@ -80,7 +79,7 @@ export default function Login() {
         },
       });
       
-      setData(response.data); // Store protected data in state
+      setData(response.data); 
     } catch (error) {
       console.error('Error fetching protected data:', error.response?.data || error.message);
       if (error.response?.status === 401) {
@@ -98,10 +97,21 @@ export default function Login() {
         // sendTokenToHeaders(res.data.key)
         addToken(res.data.key)
         navigate("/")
-        fetchProtectedData()
+        fetchProtectedData(res.data.key)
       }
     }).catch(err => console.log(err, '💩💩💩')).finally(() => setLoading(false))
   }
+
+  //   const fetchProtectedData = async () => {
+  //     try {
+  //       const data = await apiRequest('GET', '/auth/login');
+  //       setProtectedData(data);
+  //     } catch (error) {
+  //       console.error("Error fetching protected data:", error.message);
+  //     }
+  //   };
+
+
 
   // const onFinish = async (data) => {
   //   try {
@@ -111,15 +121,6 @@ export default function Login() {
   //     fetchProtectedData();
   //   } catch (error) {
   //     alert('Login failed. Please check your credentials.');
-  //   }
-  // };
-
-  // const fetchProtectedData = async () => {
-  //   try {
-  //     const data = await apiRequest('GET', '/auth/login');
-  //     setProtectedData(data);
-  //   } catch (error) {
-  //     console.error("Error fetching protected data:", error.message);
   //   }
   // };
 
